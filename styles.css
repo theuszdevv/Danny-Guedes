@@ -301,7 +301,9 @@ a {
   gap: 12px;
 }
 
-.mobile-nav-strip {
+.mobile-menu-toggle,
+.mobile-drawer,
+.scrolly-step__mobile-media {
   display: none;
 }
 
@@ -1981,8 +1983,8 @@ a {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid var(--blush-border);
-    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
-    gap: 10px;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+    gap: 8px;
     box-shadow: 0 -8px 24px rgba(44, 26, 22, 0.12);
   }
 
@@ -1993,11 +1995,20 @@ a {
     justify-content: center;
     gap: 6px;
     min-height: 46px;
+    padding: 0 12px;
     border-radius: var(--radius-pill);
-    font-size: 0.8rem;
+    font-size: 0.74rem;
     font-weight: 700;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
     text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .mobile-floating-bar__btn .icon-svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
   }
 
   .mobile-floating-bar__btn--secondary {
@@ -2099,30 +2110,76 @@ a {
     display: none;
   }
 
-  .mobile-nav-strip {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 8px 18px 10px;
-    border-top: 1px solid var(--blush-cashmere);
-    scrollbar-width: none;
+  .header-inner {
+    padding: 10px 20px;
+    justify-content: space-between;
   }
 
-  .mobile-nav-strip::-webkit-scrollbar {
+  .brand-logo__img {
+    height: 40px;
+  }
+
+  .mobile-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--blush-border);
+    background: var(--bg-white);
+    color: var(--heading-brown);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .mobile-menu-toggle .icon-svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .mobile-menu-toggle .icon-close {
     display: none;
   }
 
-  .mobile-nav-strip a {
-    flex-shrink: 0;
+  .mobile-menu-toggle[aria-expanded="true"] .icon-menu {
+    display: none;
+  }
+
+  .mobile-menu-toggle[aria-expanded="true"] .icon-close {
+    display: block;
+  }
+
+  .mobile-drawer {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 20px 20px;
+    background: rgba(250, 248, 245, 0.98);
+    border-top: 1px solid var(--blush-border);
+    box-shadow: 0 12px 30px rgba(44, 26, 22, 0.12);
+  }
+
+  .mobile-drawer.is-open {
+    display: flex;
+  }
+
+  .mobile-drawer a:not(.btn-pill) {
     text-decoration: none;
-    font-size: 0.78rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--heading-brown);
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
     background: var(--bg-white);
-    padding: 8px 16px;
-    border-radius: var(--radius-pill);
-    border: 1px solid var(--blush-border);
+    border: 1px solid var(--blush-cashmere);
+  }
+
+  .mobile-drawer__cta {
+    margin-top: 6px;
+    width: 100%;
+    justify-content: center;
+    min-height: 46px;
   }
 
   .catalog-summary-bar {
@@ -2130,12 +2187,16 @@ a {
     bottom: 68px; /* sits right above mobile-floating-bar */
     z-index: 40;
     box-shadow: var(--shadow-lg);
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 12px;
   }
 
   .footer-inner {
     flex-direction: column;
     text-align: center;
-    padding-bottom: 60px; /* space for mobile action bar */
+    padding-bottom: 76px; /* space for mobile action bar */
   }
 
   .footer-meta {
@@ -2143,84 +2204,232 @@ a {
   }
 }
 
-@media (max-width: 560px) {
-  .container,
-  .header-inner {
-    padding-left: 20px;
-    padding-right: 20px;
+@media (max-width: 767px) {
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+    max-width: 100%;
+  }
+
+  /* 1. Visual-First Compact Hero (Danny's Photo Above the Fold) */
   .hero-section {
-    padding: 40px 0 50px;
+    padding: 14px 0 32px;
+    overflow-x: hidden;
+  }
+
+  .hero-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .hero-visual {
+    order: -1;
+    width: 100%;
+  }
+
+  .hero-portrait-stage {
+    width: 100%;
+    max-width: 244px;
+    height: 248px;
+    margin: 0 auto;
+  }
+
+  .hero-arch-backdrop {
+    width: 214px;
+    height: 224px;
+  }
+
+  .hero-photo-wrapper {
+    width: 202px;
+    height: 234px;
+    border-width: 3px;
+  }
+
+  .hero-floating-card {
+    padding: 8px 12px;
+    border-radius: 12px;
+    gap: 7px;
   }
 
   .hero-floating-card--top {
-    left: -8px;
+    top: 10px;
+    left: -6px;
   }
 
   .hero-floating-card--bottom {
-    right: -8px;
+    bottom: 8px;
+    right: -6px;
   }
 
-  .portfolio-grid {
-    grid-template-columns: 1fr;
+  .floating-card__thumb {
+    width: 30px;
+    height: 30px;
   }
 
-  .scrolly-experience {
-    padding: 50px 0 70px;
+  .floating-card__text strong {
+    font-size: 0.74rem;
   }
 
-  .scrolly-track {
-    gap: 16px;
+  .floating-card__text span {
+    font-size: 0.7rem;
   }
 
-  .scrolly-stage {
-    top: 56px;
-    height: 30vh;
-    min-height: 200px;
-    max-height: 250px;
+  .hero-location-badge {
+    padding: 8px 14px;
+    font-size: 0.7rem;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    justify-content: center;
+  }
+
+  .hero-badge__dot {
+    flex-shrink: 0;
+  }
+
+  .hero-title {
+    font-size: clamp(1.65rem, 6.8vw, 2.05rem);
+    line-height: 1.12;
+    margin-bottom: 8px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.88rem;
+    line-height: 1.48;
     margin-bottom: 14px;
   }
 
-  .scrolly-stage__frame {
-    border-radius: 18px;
+  .hero-subtitle__extra {
+    display: none;
   }
 
-  .scrolly-stage__meta {
-    bottom: 12px;
-    left: 14px;
-    right: 14px;
-    gap: 2px;
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+    margin-bottom: 16px;
   }
 
-  .scrolly-stage__act {
-    font-size: 1.25rem;
+  .hero-cta-group .btn-pill {
+    width: 100%;
+    justify-content: center;
+    min-height: 46px;
+    font-size: 0.8rem;
   }
 
-  .scrolly-stage__caption {
-    font-size: 1.02rem;
-    line-height: 1.2;
+  .hero-trust-list {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-top: 12px;
+  }
+
+  /* 2. Non-Sticky Vertical Editorial Cards in #metodos (Zero Overlap, 20px Padding) */
+  .scrolly-experience {
+    padding: 44px 0 56px;
+    overflow-x: hidden;
+  }
+
+  .scrolly-intro {
+    margin-bottom: 28px;
+  }
+
+  .scrolly-main-title {
+    font-size: clamp(1.8rem, 6.8vw, 2.25rem);
+  }
+
+  .scrolly-intro-lead {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .scrolly-track {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .scrolly-stage {
+    display: none !important;
+  }
+
+  .scrolly-narrative {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    min-width: 0;
   }
 
   .scrolly-step {
-    min-height: 46vh;
-    padding: 10px 0;
+    min-height: auto;
+    padding: 0;
+    width: 100%;
+    min-width: 0;
   }
 
-  .scrolly-step__card {
-    padding: 22px 16px;
-    border-radius: 18px;
+  .scrolly-step__card,
+  .scrolly-step.is-active .scrolly-step__card {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    box-sizing: border-box;
+    transform: none !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .scrolly-step__mobile-media {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: #1C0F16;
+    border: 1px solid rgba(226, 184, 170, 0.2);
+  }
+
+  .scrolly-step__mobile-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .scrolly-step__mobile-act {
+    position: absolute;
+    bottom: 10px;
+    left: 12px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #D4A373;
+    background: rgba(20, 10, 15, 0.78);
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(212, 163, 115, 0.35);
   }
 
   .scrolly-step__title {
-    font-size: 1.3rem;
+    font-size: 1.32rem;
+    line-height: 1.25;
     margin-bottom: 10px;
   }
 
   .scrolly-step__desc {
     font-size: 0.9rem;
     line-height: 1.55;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   .scrolly-step__pills {
@@ -2229,15 +2438,33 @@ a {
 
   .scrolly-pill {
     font-size: 0.72rem;
-    padding: 5px 10px;
+    padding: 8px 12px;
+  }
+
+  /* 3. Portfolio, Catalog & Booking Clean Mobile Sizing */
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-card {
+    padding: 22px 18px;
+  }
+
+  .price-item__value {
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  .makeup-addon-strip {
+    padding: 18px 16px;
   }
 
   .booking-form-panel {
-    padding: 26px 20px;
+    padding: 24px 18px;
   }
 
   .catalog-summary-bar {
-    padding: 18px 16px;
+    padding: 16px 14px;
   }
 }
 

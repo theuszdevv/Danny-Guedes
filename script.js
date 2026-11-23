@@ -3,6 +3,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ========================================================================
+  // 0. MENU HAMBÚRGUER MOBILE (ACESSÍVEL)
+  // ========================================================================
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const mobileDrawer = document.getElementById('mobileDrawer');
+
+  if (mobileMenuToggle && mobileDrawer) {
+    function closeMobileDrawer() {
+      mobileDrawer.classList.remove('is-open');
+      mobileMenuToggle.setAttribute('aria-expanded', 'false');
+      mobileDrawer.setAttribute('aria-hidden', 'true');
+    }
+
+    mobileMenuToggle.addEventListener('click', () => {
+      const willOpen = !mobileDrawer.classList.contains('is-open');
+      mobileDrawer.classList.toggle('is-open', willOpen);
+      mobileMenuToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      mobileDrawer.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
+    });
+
+    mobileDrawer.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', closeMobileDrawer);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileDrawer.classList.contains('is-open')) {
+        closeMobileDrawer();
+        mobileMenuToggle.focus();
+      }
+    });
+  }
+
+  // ========================================================================
   // 1. MINI ANIMAÇÕES AO ROLAR A PÁGINA (SCROLL REVEAL COM INTERSECTION OBSERVER)
   // ========================================================================
   const revealElements = document.querySelectorAll('.reveal-on-scroll');
@@ -202,10 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleUnifiedScroll() {
       const windowH = window.innerHeight;
-      const isMobile = window.innerWidth <= 880;
+      const isMobile = window.innerWidth < 768;
+
+      if (isMobile) {
+        isScrollTicking = false;
+        return;
+      }
 
       // 1. Hero Soft Parallax (desktop/tablet only to preserve 60fps on mobile)
-      if (heroSection && !isMobile) {
+      if (heroSection) {
         const heroRect = heroSection.getBoundingClientRect();
         if (heroRect.bottom > 0 && heroRect.top < windowH) {
           const heroDelta = -heroRect.top;
@@ -217,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 2. About Section Soft Parallax (desktop/tablet only)
-      if (aboutSection && !isMobile) {
+      if (aboutSection) {
         const aboutRect = aboutSection.getBoundingClientRect();
         if (aboutRect.bottom > 0 && aboutRect.top < windowH) {
           const aboutProgress = windowH - aboutRect.top;
@@ -226,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // 3. Scrollytelling Stage Progress & Step Tracking
+      // 3. Scrollytelling Stage Progress & Step Tracking (desktop >= 768px only)
       if (scrollyNarrative && scrollyRailFill) {
         const narrRect = scrollyNarrative.getBoundingClientRect();
         if (narrRect.bottom > 0 && narrRect.top < windowH) {
@@ -238,13 +275,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Subtle micro-parallax on stage active image
           const activeStageImg = document.querySelector('.scrolly-stage__image.is-active img');
-          if (activeStageImg && !isMobile) {
+          if (activeStageImg) {
             activeStageImg.style.setProperty('--stage-parallax', `${(clamped - 0.5) * -16}px`);
             activeStageImg.style.setProperty('--stage-scale', `${1 + clamped * 0.025}`);
           }
 
           // Fallback step switch during rapid scroll
-          const windowCenter = window.innerHeight * (isMobile ? 0.38 : 0.45);
+          const windowCenter = window.innerHeight * 0.45;
           let closestStep = null;
           let minDistance = Infinity;
 
